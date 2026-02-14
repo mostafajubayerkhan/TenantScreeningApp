@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Browse Properties - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 style="margin-bottom: var(--spacing-xl);">Available Properties</h1>
+
+        <!-- Search & Filter -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-body">
+                <form method="GET" action="{% url 'property_list' %}">
+                    <div class="grid grid-4">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="text" name="search" class="form-input" placeholder="Search properties..."
+                                value="{{ search_query }}">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="text" name="city" class="form-input" placeholder="City">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="number" name="min_price" class="form-input" placeholder="Min rent">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Properties Grid -->
+        {% if properties %}
+        <div class="grid grid-3">
+            {% for property in properties %}
+            <div class="card property-card">
+                {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.title }}" class="property-image">
+                {% else %}
+                <div class="property-image"
+                    style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); color: white; font-size: 3rem;">
+                    🏠
+                </div>
+                {% endif %}
+
+                <div class="card-body property-info">
+                    <h3 class="property-title">{{ property.title }}</h3>
+                    <p class="property-price">${{ property.monthly_rent }}<span
+                            style="font-size: 0.875rem; font-weight: 400; color: var(--color-gray-600);">/month</span>
+                    </p>
+                    <p style="color: var(--color-gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
+                        📍 {{ property.address }}, {{ property.city }}, {{ property.state }}
+                    </p>
+                    <div class="property-details" style="margin-bottom: var(--spacing-md);">
+                        <span>🛏️ {{ property.bedrooms }} bd</span>
+                        <span>🚿 {{ property.bathrooms }} ba</span>
+                        <span>📐 {{ property.square_feet }} sqft</span>
+                    </div>
+                    <p style="color: var(--color-gray-600); font-size: 0.875rem; line-height: 1.5;">
+                        {{ property.description|truncatewords:20 }}
+                    </p>
+                </div>
+
+                <div class="card-footer">
+                    <a href="{% url 'property_detail' property.pk %}" class="btn btn-primary" style="width: 100%;">View
+                        Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body" style="text-align: center; padding: var(--spacing-2xl);">
+                <p style="font-size: 1.125rem; color: var(--color-gray-500);">No properties found matching your
+                    criteria.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

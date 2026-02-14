@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ property.title }} - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 900px;">
+        <a href="{% url 'property_list' %}"
+            style="color: var(--color-primary); margin-bottom: var(--spacing-md); display: inline-block;">
+            ← Back to Properties
+        </a>
+
+        <div class="card">
+            {% if property.image %}
+            <img src="{{ property.image.url }}" alt="{{ property.title }}"
+                style="width: 100%; height: 400px; object-fit: cover;">
+            {% else %}
+            <div
+                style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); color: white; font-size: 5rem;">
+                🏠
+            </div>
+            {% endif %}
+
+            <div class="card-body">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-lg);">
+                    <div>
+                        <h1 style="margin-bottom: var(--spacing-sm);">{{ property.title }}</h1>
+                        <p style="color: var(--color-gray-600); font-size: 1.125rem;">
+                            📍 {{ property.address }}, {{ property.city }}, {{ property.state }} {{ property.zip_code }}
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span
+                            class="badge {% if property.status == 'available' %}badge-success{% elif property.status == 'pending' %}badge-warning{% else %}badge-pending{% endif %}"
+                            style="font-size: 0.875rem;">
+                            {{ property.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-xl);">
+                    <div
+                        style="font-size: 2.5rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-md);">
+                        ${{ property.monthly_rent }}<span
+                            style="font-size: 1rem; font-weight: 400; color: var(--color-gray-600);">/month</span>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-lg); flex-wrap: wrap;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-gray-600);">Bedrooms</div>
+                            <div style="font-size: 1.25rem; font-weight: 600;">🛏️ {{ property.bedrooms }}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-gray-600);">Bathrooms</div>
+                            <div style="font-size: 1.25rem; font-weight: 600;">🚿 {{ property.bathrooms }}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-gray-600);">Square Feet</div>
+                            <div style="font-size: 1.25rem; font-weight: 600;">📐 {{ property.square_feet }}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-gray-600);">Security Deposit</div>
+                            <div style="font-size: 1.25rem; font-weight: 600;">💰 ${{ property.security_deposit }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-xl);">
+                    <h3 style="margin-bottom: var(--spacing-md);">Description</h3>
+                    <p style="color: var(--color-gray-700); line-height: 1.8;">{{ property.description }}</p>
+                </div>
+
+                <div
+                    style="padding: var(--spacing-lg); background: var(--color-gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
+                    <h4 style="margin-bottom: var(--spacing-md);">Property Owner</h4>
+                    <p style="margin-bottom: 0;"><strong>{{
+                            property.landlord.get_full_name|default:property.landlord.username }}</strong></p>
+                    {% if property.landlord.email %}
+                    <p style="color: var(--color-gray-600); margin-bottom: 0;">{{ property.landlord.email }}</p>
+                    {% endif %}
+                </div>
+
+                {% if user.is_authenticated and user.role == 'tenant' %}
+                {% if has_applied %}
+                <div class="alert alert-success">
+                    ✅ You have already applied for this property. Check your <a
+                        href="{% url 'dashboard' %}">dashboard</a> for status updates.
+                </div>
+                {% elif property.status == 'available' %}
+                <a href="{% url 'application_create' property.pk %}" class="btn btn-accent btn-large"
+                    style="width: 100%;">
+                    Apply for This Property
+                </a>
+                {% else %}
+                <div class="alert alert-info">
+                    This property is currently {{ property.get_status_display|lower }}
+                </div>
+                {% endif %}
+                {% elif not user.is_authenticated %}
+                <div class="alert alert-info">
+                    <a href="{% url 'login' %}">Sign in</a> or <a href="{% url 'register' %}">create an account</a> to
+                    apply for this property.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

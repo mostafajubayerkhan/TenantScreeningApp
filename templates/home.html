@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Find Your Perfect Rental Home</h1>
+        <p>The modern, secure platform for landlords and tenants. Streamline screening, applications, and lease
+            management.</p>
+        <div class="hero-cta">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-accent btn-large">Get Started Free</a>
+            <a href="{% url 'property_list' %}" class="btn btn-outline btn-large"
+                style="border-color: white; color: white;">Browse Properties</a>
+            {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-accent btn-large">Go to Dashboard</a>
+            <a href="{% url 'property_list' %}" class="btn btn-outline btn-large"
+                style="border-color: white; color: white;">Browse Properties</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose TenantScreening?</h2>
+            <p style="color: var(--color-gray-600); max-width: 600px; margin: 0 auto;">
+                Modern tools for a modern rental experience. Save time, reduce risk, and make better decisions.
+            </p>
+        </div>
+
+        <div class="grid grid-3">
+            <div class="card feature-box">
+                <div class="feature-icon">🔍</div>
+                <h3>Comprehensive Screening</h3>
+                <p style="color: var(--color-gray-600);">
+                    Background checks, credit reports, and income verification in one place.
+                </p>
+            </div>
+
+            <div class="card feature-box">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p style="color: var(--color-gray-600);">
+                    Get screening results in minutes, not days. Make decisions faster.
+                </p>
+            </div>
+
+            <div class="card feature-box">
+                <div class="feature-icon">📄</div>
+                <h3>Digital Leases</h3>
+                <p style="color: var(--color-gray-600);">
+                    Create, send, and sign leases electronically. 100% paperless.
+                </p>
+            </div>
+
+            <div class="card feature-box">
+                <div class="feature-icon">💬</div>
+                <h3>Built-in Messaging</h3>
+                <p style="color: var(--color-gray-600);">
+                    Communication hub for landlords and tenants. All in one place.
+                </p>
+            </div>
+
+            <div class="card feature-box">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Private</h3>
+                <p style="color: var(--color-gray-600);">
+                    Bank-level encryption. Your data is safe and protected.
+                </p>
+            </div>
+
+            <div class="card feature-box">
+                <div class="feature-icon">📊</div>
+                <h3>Smart Analytics</h3>
+                <p style="color: var(--color-gray-600);">
+                    Track applications, view insights, and make data-driven decisions.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Properties Section -->
+{% if properties %}
+<section class="section" style="background: white;">
+    <div class="container">
+        <div class="section-title">
+            <h2>Featured Properties</h2>
+            <p style="color: var(--color-gray-600);">Discover available rental homes in your area</p>
+        </div>
+
+        <div class="grid grid-3">
+            {% for property in properties %}
+            <div class="card property-card">
+                {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.title }}" class="property-image">
+                {% else %}
+                <div class="property-image"
+                    style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); color: white; font-size: 3rem;">
+                    🏠
+                </div>
+                {% endif %}
+
+                <div class="card-body property-info">
+                    <h3 class="property-title">{{ property.title }}</h3>
+                    <p class="property-price">${{ property.monthly_rent }}<span
+                            style="font-size: 0.875rem; font-weight: 400; color: var(--color-gray-600);">/month</span>
+                    </p>
+                    <p style="color: var(--color-gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
+                        📍 {{ property.city }}, {{ property.state }}
+                    </p>
+                    <div class="property-details">
+                        <span>🛏️ {{ property.bedrooms }} bd</span>
+                        <span>🚿 {{ property.bathrooms }} ba</span>
+                        <span>📐 {{ property.square_feet }} sqft</span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <a href="{% url 'property_detail' property.pk %}" class="btn btn-primary" style="width: 100%;">View
+                        Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: var(--spacing-xl);">
+            <a href="{% url 'property_list' %}" class="btn btn-outline btn-large">View All Properties</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- How It Works -->
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>How It Works</h2>
+            <p style="color: var(--color-gray-600);">Simple process for both landlords and tenants</p>
+        </div>
+
+        <div class="grid grid-2" style="gap: var(--spacing-2xl);">
+            <!-- For Landlords -->
+            <div class="card" style="padding: var(--spacing-xl);">
+                <h3 style="margin-bottom: var(--spacing-lg); color: var(--color-primary);">For Landlords</h3>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            1</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">List Your Property</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Add your rental property with
+                                photos and details in minutes.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            2</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Receive Applications</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Get applications from
+                                qualified tenants instantly.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            3</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Screen & Review</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">View comprehensive screening
+                                reports and make informed decisions.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            4</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Sign & Manage</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Create and sign leases
+                                digitally. Manage everything in one place.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- For Tenants -->
+            <div class="card" style="padding: var(--spacing-xl);">
+                <h3 style="margin-bottom: var(--spacing-lg); color: var(--color-accent);">For Tenants</h3>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            1</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Browse Properties</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Search and filter rentals that
+                                match your criteria.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            2</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Apply Online</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Submit your application with
+                                all required information securely.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            3</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Get Approved</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Receive notification when your
+                                application is reviewed.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div
+                            style="flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--color-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            4</div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs);">Move In</h4>
+                            <p style="color: var(--color-gray-600); font-size: 0.875rem;">Sign your lease digitally and
+                                get ready to move in!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section"
+    style="background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%); color: white;">
+    <div class="container" style="text-align: center;">
+        <h2 style="color: white; margin-bottom: var(--spacing-md);">Ready to Get Started?</h2>
+        <p style="font-size: 1.125rem; margin-bottom: var(--spacing-xl); opacity: 0.95;">
+            Join thousands of landlords and tenants who trust TenantScreening.
+        </p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-accent btn-large">Create Free Account</a>
+            <a href="{% url 'login' %}" class="btn btn-outline btn-large"
+                style="border-color: white; color: white;">Sign In</a>
+            {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-accent btn-large">Go to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

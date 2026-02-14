@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Application Details - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 900px;">
+        <a href="{% url 'dashboard' %}"
+            style="color: var(--color-primary); margin-bottom: var(--spacing-md); display: inline-block;">
+            ← Back to Dashboard
+        </a>
+
+        <div
+            style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xl);">
+            <div>
+                <h1 style="margin-bottom: var(--spacing-sm);">Application Details</h1>
+                <p style="color: var(--color-gray-600);">Application #{{ application.id }}</p>
+            </div>
+            <span
+                class="badge {% if application.status == 'approved' %}badge-success{% elif application.status == 'rejected' %}badge-warning{% else %}badge-pending{% endif %}"
+                style="font-size: 1rem; padding: var(--spacing-sm) var(--spacing-md);">
+                {{ application.get_status_display }}
+            </span>
+        </div>
+
+        <!-- Property Info -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Property Information</h3>
+            </div>
+            <div class="card-body">
+                <h4 style="margin-bottom: var(--spacing-sm);">{{ application.property.title }}</h4>
+                <p style="color: var(--color-gray-600); margin-bottom: var(--spacing-md);">
+                    📍 {{ application.property.address }}, {{ application.property.city }}, {{
+                    application.property.state }}
+                </p>
+                <div style="display: flex; gap: var(--spacing-lg);">
+                    <div>
+                        <span style="color: var(--color-gray-600);">Monthly Rent:</span>
+                        <strong style="color: var(--color-primary);">${{ application.property.monthly_rent }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--color-gray-600);">Bedrooms:</span>
+                        <strong>{{ application.property.bedrooms }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--color-gray-600);">Bathrooms:</span>
+                        <strong>{{ application.property.bathrooms }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applicant Info -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Applicant Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-2">
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Name</h5>
+                        <p style="margin-bottom: var(--spacing-md);"><strong>{{
+                                application.tenant.get_full_name|default:application.tenant.username }}</strong></p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Email</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{{ application.tenant.email }}</p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Current Address</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{{ application.current_address }}</p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Move-in Date</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{{ application.move_in_date|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employment Info -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Employment Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-2">
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Employer</h5>
+                        <p style="margin-bottom: var(--spacing-md);"><strong>{{ application.employer_name }}</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Job Title</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{{ application.job_title }}</p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Annual Income</h5>
+                        <p
+                            style="margin-bottom: var(--spacing-md); color: var(--color-success); font-weight: 600; font-size: 1.125rem;">
+                            ${{ application.annual_income|floatformat:0 }}</p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Employment Duration</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{{ application.employment_duration }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Additional Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-2">
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Number of Occupants</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{{ application.number_of_occupants }}</p>
+                    </div>
+                    <div>
+                        <h5
+                            style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                            Pets</h5>
+                        <p style="margin-bottom: var(--spacing-md);">{% if application.has_pets %}Yes{% else %}No{%
+                            endif %}</p>
+                    </div>
+                </div>
+                {% if application.pet_details %}
+                <div>
+                    <h5
+                        style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                        Pet Details</h5>
+                    <p style="margin-bottom: var(--spacing-md);">{{ application.pet_details }}</p>
+                </div>
+                {% endif %}
+                {% if application.additional_notes %}
+                <div>
+                    <h5
+                        style="color: var(--color-gray-600); font-size: 0.875rem; text-transform: uppercase; margin-bottom: var(--spacing-xs);">
+                        Additional Notes</h5>
+                    <p style="margin-bottom: 0;">{{ application.additional_notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Landlord Actions -->
+        {% if user == application.property.landlord and application.status == 'pending' %}
+        <div class="card">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Review Application</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'application_review' application.pk %}">
+                    {% csrf_token %}
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <button type="submit" name="status" value="under_review" class="btn btn-primary">
+                            Mark Under Review
+                        </button>
+                        <button type="submit" name="status" value="approved" class="btn btn-accent"
+                            style="background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);">
+                            Approve Application
+                        </button>
+                        <button type="submit" name="status" value="rejected" class="btn btn-outline"
+                            style="border-color: var(--color-warning); color: var(--color-warning);">
+                            Reject Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Application Timeline -->
+        <div
+            style="margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: var(--color-gray-100); border-radius: var(--radius-md);">
+            <h4 style="margin-bottom: var(--spacing-md);">Timeline</h4>
+            <p style="color: var(--color-gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                <strong>Submitted:</strong> {{ application.submitted_at|date:"F d, Y \a\t g:i A" }}
+            </p>
+            {% if application.reviewed_at %}
+            <p style="color: var(--color-gray-600); font-size: 0.875rem; margin-bottom: 0;">
+                <strong>Reviewed:</strong> {{ application.reviewed_at|date:"F d, Y \a\t g:i A" }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

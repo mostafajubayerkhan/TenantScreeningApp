@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Landlord Dashboard - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 style="margin-bottom: var(--spacing-xl);">
+            Welcome back, {{ user.first_name|default:user.username }}! 👋
+        </h1>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-3" style="margin-bottom: var(--spacing-2xl);">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_properties }}</div>
+                <div class="stat-label">Properties Listed</div>
+            </div>
+
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--color-accent) 0%, #ea580c 100%);">
+                <div class="stat-number">{{ pending_applications }}</div>
+                <div class="stat-label">Pending Applications</div>
+            </div>
+
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);">
+                <div class="stat-number">{{ applications.count }}</div>
+                <div class="stat-label">Total Applications</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="margin-bottom: var(--spacing-2xl);">
+            <a href="{% url 'property_create' %}" class="btn btn-accent btn-large">
+                ➕ Add New Property
+            </a>
+            <a href="{% url 'property_list' %}" class="btn btn-outline">
+                View All Properties
+            </a>
+        </div>
+
+        <!-- Properties Section -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Your Properties</h3>
+            </div>
+            <div class="card-body">
+                {% if properties %}
+                <div class="grid grid-2">
+                    {% for property in properties %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>{{ property.title }}</h4>
+                            <p style="color: var(--color-gray-600); margin-bottom: var(--spacing-sm);">
+                                📍 {{ property.city }}, {{ property.state }}
+                            </p>
+                            <p
+                                style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--spacing-sm);">
+                                ${{ property.monthly_rent }}/month
+                            </p>
+                            <div style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                                <span
+                                    class="badge {% if property.status == 'available' %}badge-success{% elif property.status == 'pending' %}badge-warning{% else %}badge-pending{% endif %}">
+                                    {{ property.get_status_display }}
+                                </span>
+                                <span style="font-size: 0.875rem; color: var(--color-gray-600);">
+                                    {{ property.applications.count }} application(s)
+                                </span>
+                            </div>
+                            <a href="{% url 'property_detail' property.pk %}" class="btn btn-primary btn-small">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: var(--spacing-xl); color: var(--color-gray-500);">
+                    <p>No properties listed yet.</p>
+                    <a href="{% url 'property_create' %}" class="btn btn-primary">Add Your First Property</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        <div class="card">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Recent Applications</h3>
+            </div>
+            <div class="card-body">
+                {% if applications %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--color-gray-200);">
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Applicant
+                                </th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Property
+                                </th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Income</th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Status</th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Date</th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications|slice:":10" %}
+                            <tr style="border-bottom: 1px solid var(--color-gray-100);">
+                                <td style="padding: var(--spacing-md);">
+                                    <strong>{{ application.tenant.get_full_name|default:application.tenant.username
+                                        }}</strong><br>
+                                    <span style="font-size: 0.875rem; color: var(--color-gray-600);">{{
+                                        application.tenant.email }}</span>
+                                </td>
+                                <td style="padding: var(--spacing-md);">{{ application.property.title }}</td>
+                                <td style="padding: var(--spacing-md);">${{ application.annual_income|floatformat:0
+                                    }}/year</td>
+                                <td style="padding: var(--spacing-md);">
+                                    <span
+                                        class="badge {% if application.status == 'approved' %}badge-success{% elif application.status == 'rejected' %}badge-warning{% else %}badge-pending{% endif %}">
+                                        {{ application.get_status_display }}
+                                    </span>
+                                </td>
+                                <td style="padding: var(--spacing-md); color: var(--color-gray-600);">{{
+                                    application.submitted_at|date:"M d, Y" }}</td>
+                                <td style="padding: var(--spacing-md);">
+                                    <a href="{% url 'application_detail' application.pk %}"
+                                        class="btn btn-primary btn-small">
+                                        Review
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: var(--spacing-xl); color: var(--color-gray-500);">
+                    <p>No applications received yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

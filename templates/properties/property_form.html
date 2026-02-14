@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Property - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 700px;">
+        <h1 style="margin-bottom: var(--spacing-xl);">
+            {% if form.instance.pk %}Edit{% else %}Add New{% endif %} Property
+        </h1>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">Property Title *</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                            {{ form.title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                            {{ form.description.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}" class="form-label">Address *</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                        <div style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                            {{ form.address.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="grid grid-3">
+                        <div class="form-group">
+                            <label for="{{ form.city.id_for_label }}" class="form-label">City *</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.city.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.state.id_for_label }}" class="form-label">State *</label>
+                            {{ form.state }}
+                            {% if form.state.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.state.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.zip_code.id_for_label }}" class="form-label">ZIP Code *</label>
+                            {{ form.zip_code }}
+                            {% if form.zip_code.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.zip_code.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-3">
+                        <div class="form-group">
+                            <label for="{{ form.bedrooms.id_for_label }}" class="form-label">Bedrooms *</label>
+                            {{ form.bedrooms }}
+                            {% if form.bedrooms.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.bedrooms.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.bathrooms.id_for_label }}" class="form-label">Bathrooms *</label>
+                            {{ form.bathrooms }}
+                            {% if form.bathrooms.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.bathrooms.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.square_feet.id_for_label }}" class="form-label">Square Feet *</label>
+                            {{ form.square_feet }}
+                            {% if form.square_feet.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.square_feet.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label for="{{ form.monthly_rent.id_for_label }}" class="form-label">Monthly Rent ($)
+                                *</label>
+                            {{ form.monthly_rent }}
+                            {% if form.monthly_rent.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.monthly_rent.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.security_deposit.id_for_label }}" class="form-label">Security Deposit
+                                ($) *</label>
+                            {{ form.security_deposit }}
+                            {% if form.security_deposit.errors %}
+                            <div
+                                style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                                {{ form.security_deposit.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">Status *</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                        <div style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                            {{ form.status.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">Property Image</label>
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                        <div style="color: var(--color-warning); font-size: 0.875rem; margin-top: var(--spacing-xs);">
+                            {{ form.image.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <button type="submit" class="btn btn-primary btn-large">
+                            {% if form.instance.pk %}Update{% else %}Create{% endif %} Property
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

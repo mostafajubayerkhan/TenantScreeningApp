@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tenant Dashboard - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 style="margin-bottom: var(--spacing-xl);">
+            Welcome, {{ user.first_name|default:user.username }}! 🏠
+        </h1>
+
+        <!-- Quick Actions -->
+        <div style="margin-bottom: var(--spacing-2xl);">
+            <a href="{% url 'property_list' %}" class="btn btn-accent btn-large">
+                🔍 Browse Properties
+            </a>
+        </div>
+
+        <!-- Applications Section -->
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Your Applications</h3>
+            </div>
+            <div class="card-body">
+                {% if applications %}
+                <div class="grid grid-2">
+                    {% for application in applications %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>{{ application.property.title }}</h4>
+                            <p style="color: var(--color-gray-600); margin-bottom: var(--spacing-sm);">
+                                📍 {{ application.property.city }}, {{ application.property.state }}
+                            </p>
+                            <p
+                                style="font-size: 1.125rem; font-weight: 600; color: var(--color-gray-700); margin-bottom: var(--spacing-sm);">
+                                ${{ application.property.monthly_rent }}/month
+                            </p>
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <span
+                                    class="badge {% if application.status == 'approved' %}badge-success{% elif application.status == 'rejected' %}badge-warning{% else %}badge-pending{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                            </div>
+                            <p
+                                style="font-size: 0.875rem; color: var(--color-gray-600); margin-bottom: var(--spacing-md);">
+                                Applied: {{ application.submitted_at|date:"M d, Y" }}
+                            </p>
+                            <a href="{% url 'application_detail' application.pk %}" class="btn btn-primary btn-small">
+                                View Application
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: var(--spacing-xl); color: var(--color-gray-500);">
+                    <p style="font-size: 1.125rem; margin-bottom: var(--spacing-md);">You haven't applied to any
+                        properties yet.</p>
+                    <a href="{% url 'property_list' %}" class="btn btn-accent">Browse Available Properties</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Leases Section -->
+        <div class="card">
+            <div class="card-header">
+                <h3 style="margin-bottom: 0;">Your Leases</h3>
+            </div>
+            <div class="card-body">
+                {% if leases %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--color-gray-200);">
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Property
+                                </th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Rent</th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Lease Period
+                                </th>
+                                <th style="text-align: left; padding: var(--spacing-md); font-weight: 600;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lease in leases %}
+                            <tr style="border-bottom: 1px solid var(--color-gray-100);">
+                                <td style="padding: var(--spacing-md);">
+                                    <strong>{{ lease.property.title }}</strong><br>
+                                    <span style="font-size: 0.875rem; color: var(--color-gray-600);">{{
+                                        lease.property.address }}</span>
+                                </td>
+                                <td style="padding: var(--spacing-md);">${{ lease.monthly_rent }}/month</td>
+                                <td style="padding: var(--spacing-md);">{{ lease.lease_start_date|date:"M d, Y" }} - {{
+                                    lease.lease_end_date|date:"M d, Y" }}</td>
+                                <td style="padding: var(--spacing-md);">
+                                    <span
+                                        class="badge {% if lease.status == 'signed_both' %}badge-success{% else %}badge-pending{% endif %}">
+                                        {{ lease.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: var(--spacing-xl); color: var(--color-gray-500);">
+                    <p>No active leases.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
