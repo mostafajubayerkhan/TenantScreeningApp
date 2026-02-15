@@ -136,3 +136,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
+# Stripe Settings (Test Mode Placeholders)
+STRIPE_PUBLIC_KEY = "pk_test_placeholder"
+STRIPE_SECRET_KEY = "sk_test_placeholder"
+STRIPE_WEBHOOK_SECRET = "whsec_placeholder"
+

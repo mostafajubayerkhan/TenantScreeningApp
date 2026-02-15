@@ -30,4 +30,9 @@ urlpatterns = [
     path('applications/<int:pk>/review/', views.application_review, name='application_review'),
     path('application/<int:pk>/screening/', views.run_screening, name='run_screening'),
     path('screening/<int:pk>/', views.view_screening_report, name='view_screening_report'),
+    
+    # Stripe Payments
+    path('payment/screening/<int:pk>/', views.create_checkout_session, name='create_checkout_session'),
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
 ]

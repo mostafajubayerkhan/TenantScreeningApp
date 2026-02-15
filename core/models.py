@@ -214,3 +214,27 @@ class Message(models.Model):
     
     def __str__(self):
         return f"Message from {self.sender.username} to {self.recipient.username}"
+
+class Transaction(models.Model):
+    PURPOSE_CHOICES = [
+        ('screening', 'Tenant Screening'),
+        ('subscription', 'Landlord Pro Subscription'),
+        ('rent', 'Rent Payment'),
+    ]
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    stripe_session_id = models.CharField(max_length=255, unique=True)
+    application = models.ForeignKey('RentalApplication', on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.purpose} - ${self.amount}"

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="margin-top: var(--spacing-xl); text-align: center;">
+    <div class="card" style="max-width: 600px; margin: 0 auto; padding: var(--spacing-xl);">
+        <div style="font-size: 4rem; margin-bottom: var(--spacing-md);">🎉</div>
+        <h1 style="margin-bottom: var(--spacing-sm);">Payment Successful!</h1>
+        <p style="color: var(--color-gray-600); font-size: 1.1rem; margin-bottom: var(--spacing-lg);">
+            Thank you for your payment. Your screening report is currently being generated and will be ready in a few
+            moments.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+            <p style="font-size: 0.9rem; color: var(--color-gray-400);">
+                Session ID: {{ session_id }}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

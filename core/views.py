@@ -4,7 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
-from .models import User, Property, RentalApplication, ScreeningReport, LeaseDocument, Message
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+import stripe
+from .models import User, Property, RentalApplication, ScreeningReport, LeaseDocument, Message, Transaction
 from .forms import UserRegistrationForm, PropertyForm, RentalApplicationForm
 
 
@@ -400,3 +404,105 @@ def view_screening_report(request, pk):
         return redirect('dashboard')
         
     return render(request, 'applications/screening_report.html', {'screening': screening})
+
+
+@login_required
+def create_checkout_session(request, pk):
+    """Start Stripe Checkout for Screening Report"""
+    application = get_object_or_404(RentalApplication, pk=pk)
+    
+    # Permissions
+    if request.user != application.property.landlord:
+        messages.error(request, 'Unauthorized.')
+        return redirect('dashboard')
+    
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': f'Screening Report - {application.tenant.get_full_name()}',
+                        'description': f'Verified Credit, Criminal, and Eviction check for {application.property.title}',
+                    },
+                    'unit_amount': 4500, # $45.00
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=request.build_absolute_uri('/payment/success/?session_id={CHECKOUT_SESSION_ID}'),
+            cancel_url=request.build_absolute_uri(f'/application/{application.pk}/'),
+            metadata={
+                'application_id': application.id,
+                'purpose': 'screening',
+                'user_id': request.user.id
+            }
+        )
+        
+        # Create pending transaction
+        Transaction.objects.create(
+            user=request.user,
+            amount=45.00,
+            purpose='screening',
+            status='pending',
+            stripe_session_id=checkout_session.id,
+            application=application
+        )
+        
+        return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        messages.error(request, f"Error starting payment: {str(e)}")
+        return redirect('application_detail', pk=application.pk)
+
+@login_required
+def payment_success(request):
+    session_id = request.GET.get('session_id')
+    return render(request, 'payment/success.html', {'session_id': session_id})
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except Exception as e:
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        
+        # Update transaction
+        transaction = Transaction.objects.get(stripe_session_id=session.id)
+        transaction.status = 'completed'
+        transaction.save()
+        
+        # Trigger the screening logic (from run_screening)
+        if transaction.purpose == 'screening' and transaction.application:
+            app = transaction.application
+            # Mock screening logic (we already have this in run_screening)
+            import random
+            score_val = random.randint(700, 820)
+            score_range = 'excellent' if score_val >= 750 else 'good' if score_val >= 700 else 'fair'
+            
+            ScreeningReport.objects.get_or_create(
+                application=app,
+                defaults={
+                    'credit_score_range': score_range,
+                    'criminal_record_clear': True,
+                    'eviction_history_clear': True,
+                    'employment_verified': True,
+                    'income_verified': True,
+                    'risk_level': 'low' if score_val > 700 else 'medium',
+                    'recommendation': 'Accept' if score_val > 650 else 'Conditional'
+                }
+            )
+
+    return HttpResponse(status=200)
