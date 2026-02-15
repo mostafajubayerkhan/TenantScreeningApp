@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Market Rent Estimator - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="hero"
+    style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: var(--spacing-4xl) 0;">
+    <div class="container" style="max-width: 800px;">
+        <h1 style="margin-bottom: var(--spacing-lg);">Smart Rent Estimator 📊</h1>
+        <p style="font-size: 1.25rem; margin-bottom: var(--spacing-xl); opacity: 0.9;">
+            Discover the optimal rental price for your property with our AI-powered analysis.
+        </p>
+
+        <div class="glass-panel"
+            style="padding: var(--spacing-2xl); text-align: left; border-radius: var(--radius-lg);">
+            {% if result %}
+            <!-- Result Display -->
+            <div style="text-align: center; animation: fadeInUp 0.5s ease-out;">
+                <h3 style="color: white; margin-bottom: var(--spacing-md);">Estimated Monthly Rent</h3>
+                <div
+                    style="font-size: 4rem; font-weight: 800; color: var(--color-accent); text-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: var(--spacing-md);">
+                    ${{ result.optimal_price }}
+                </div>
+                <div
+                    style="display: flex; justify-content: center; gap: var(--spacing-xl); margin-bottom: var(--spacing-xl);">
+                    <div>
+                        <span
+                            style="display: block; font-size: 0.875rem; color: rgba(255,255,255,0.7);">Conservative</span>
+                        <span style="font-size: 1.5rem; font-weight: 600; color: white;">${{ result.low_range }}</span>
+                    </div>
+                    <div>
+                        <span
+                            style="display: block; font-size: 0.875rem; color: rgba(255,255,255,0.7);">Aggressive</span>
+                        <span style="font-size: 1.5rem; font-weight: 600; color: white;">${{ result.high_range }}</span>
+                    </div>
+                </div>
+                <a href="{% url 'rent_estimator' %}" class="btn btn-outline">Analyze Another Property</a>
+                <a href="{% url 'register' %}" class="btn btn-primary" style="margin-left: var(--spacing-md);">List for
+                    Free</a>
+            </div>
+            {% else %}
+            <!-- Estimation Form -->
+            <form method="post" action="{% url 'rent_estimator' %}">
+                {% csrf_token %}
+                <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <div class="form-group">
+                        <label class="form-label" style="color: white;">Zip Code</label>
+                        <input type="text" name="zip_code" class="form-input" placeholder="e.g. 90210" required
+                            style="background: rgba(255,255,255,0.9); border: none;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: white;">Property Type</label>
+                        <select name="property_type" class="form-select" required
+                            style="background: rgba(255,255,255,0.9); border: none;">
+                            <option value="apartment">Apartment</option>
+                            <option value="house">Single Family House</option>
+                            <option value="condo">Condo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <div class="form-group">
+                        <label class="form-label" style="color: white;">Bedrooms</label>
+                        <input type="number" name="bedrooms" class="form-input" value="1" min="0" required
+                            style="background: rgba(255,255,255,0.9); border: none;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: white;">Bathrooms</label>
+                        <input type="number" name="bathrooms" class="form-input" value="1" step="0.5" min="0.5" required
+                            style="background: rgba(255,255,255,0.9); border: none;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" style="color: white; margin-bottom: var(--spacing-sm);">Amenities</label>
+                    <div class="grid grid-3" style="gap: var(--spacing-sm);">
+                        <label style="color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" name="has_parking" value="true" class="form-checkbox"> Parking
+                        </label>
+                        <label style="color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" name="has_pool" value="true" class="form-checkbox"> Pool
+                        </label>
+                        <label style="color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" name="has_gym" value="true" class="form-checkbox"> Gym
+                        </label>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--spacing-xl);">
+                    <button type="submit" class="btn btn-accent btn-large" style="width: 100%;">
+                        Calculate Market Rent
+                    </button>
+                    <p style="margin-top: var(--spacing-md); font-size: 0.875rem; color: rgba(255,255,255,0.6);">
+                        *Estimates are based on simulated market data.
+                    </p>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

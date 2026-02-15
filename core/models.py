@@ -12,6 +12,36 @@ class User(AbstractUser):
     
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='tenant')
     phone_number = models.CharField(max_length=15, blank=True)
+    
+    # Trust Score Fields
+    is_identity_verified = models.BooleanField(default=False)
+    has_employment_history = models.BooleanField(default=False)
+    has_rental_history = models.BooleanField(default=False)
+    background_check_clear = models.BooleanField(default=False)
+
+    def calculate_trust_score(self):
+        score = 0
+        if self.email:
+            score += 10
+        if self.phone_number:
+            score += 10
+        if self.is_identity_verified:
+            score += 20
+        if self.has_employment_history:
+            score += 20
+        if self.has_rental_history:
+            score += 20
+        if self.background_check_clear:
+            score += 20
+        return min(score, 100)
+    
+    @property
+    def trust_badge(self):
+        score = self.calculate_trust_score()
+        if score >= 90: return 'gold'
+        if score >= 70: return 'silver'
+        if score >= 50: return 'bronze'
+        return 'unranked'
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -43,6 +73,7 @@ class Property(models.Model):
     image = models.ImageField(upload_to='properties/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    views = models.IntegerField(default=0)
     
     class Meta:
         verbose_name_plural = "Properties"

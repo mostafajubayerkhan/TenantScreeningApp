@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Button Color Preview{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-preview {
+        padding: 4rem 0;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(17, 24, 39, 0.95) 100%),
+        url('{% static "images/hero_bg.png" %}');
+        background-size: cover;
+        color: white;
+    }
+
+    /* Option 1: Fresh & Trustworthy (Mint & Ice Blue) */
+    .btn-mint {
+        background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(5, 150, 105, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-mint:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px rgba(5, 150, 105, 0.5);
+    }
+
+    .btn-ice {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-ice:hover {
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        color: #0284c7;
+        border-color: transparent;
+        box-shadow: 0 0 15px rgba(186, 230, 253, 0.6);
+    }
+
+    /* Option 2: Vibrant Tech (Bright Blue & Lavender) */
+    .btn-electric {
+        background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-electric:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px rgba(37, 99, 235, 0.5);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .btn-lavender {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-lavender:hover {
+        background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+        color: #6b21a8;
+        border-color: transparent;
+        box-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+    }
+
+    /* Option 3: Luminous (Turquoise & Pearl) */
+    .btn-turquoise {
+        background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(6, 182, 212, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-turquoise:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px rgba(6, 182, 212, 0.5);
+        filter: brightness(1.1);
+    }
+
+    .btn-pearl {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-pearl:hover {
+        background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+        color: #0f172a;
+        border-color: transparent;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    }
+
+    .option-container {
+        margin: 3rem auto;
+        max-width: 800px;
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="option-container">
+    <h2 style="margin-bottom: 2rem; color: #1e3a8a;">Option 1: Fresh & Minty</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">
+        <strong>Get Started:</strong> Bright Mint Green (Symbolizes Growth/Go)<br>
+        <strong>Browse:</strong> Ice Blue Glow (Very light and airy)
+    </p>
+    <div class="hero-preview" style="border-radius: 1rem;">
+        <h1>Find Your Home</h1>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <button class="btn-mint">Get Started Free</button>
+            <button class="btn-ice">Browse Properties</button>
+        </div>
+    </div>
+</div>
+
+<div class="option-container">
+    <h2 style="margin-bottom: 2rem; color: #1e3a8a;">Option 2: Tech & Lavender</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">
+        <strong>Get Started:</strong> Electric Blue (Trustworthy & Energetic)<br>
+        <strong>Browse:</strong> Soft Lavender Glow (Unique premium feel)
+    </p>
+    <div class="hero-preview" style="border-radius: 1rem;">
+        <h1>Find Your Home</h1>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <button class="btn-electric">Get Started Free</button>
+            <button class="btn-lavender">Browse Properties</button>
+        </div>
+    </div>
+</div>
+
+<div class="option-container">
+    <h2 style="margin-bottom: 2rem; color: #1e3a8a;">Option 3: Luminous Turquoise</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">
+        <strong>Get Started:</strong> Bright Turquoise (Very modern, bright, not dark)<br>
+        <strong>Browse:</strong> Pearl White (Classic, clean, subtle)
+    </p>
+    <div class="hero-preview" style="border-radius: 1rem;">
+        <h1>Find Your Home</h1>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <button class="btn-turquoise">Get Started Free</button>
+            <button class="btn-pearl">Browse Properties</button>
+        </div>
+    </div>
+</div>
+
+<div class="option-container">
+    <h2 style="margin-bottom: 2rem; color: #1e3a8a;">Option 4: Clean Grid (Requested)</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">
+        <strong>Background:</strong> Off-white with 0.5" dot grid pattern.<br>
+        <strong>Buttons:</strong> Luminous Turquoise & Pearl White (Option 3 style)
+    </p>
+    <!-- Clean Grid Background -->
+    <div class="hero-preview"
+        style="border-radius: 1rem; background: #f8f9fa; background-image: radial-gradient(#94a3b8 2px, transparent 2px); background-size: 40px 40px; color: #1e293b; border: 1px solid #e2e8f0; text-shadow: none;">
+        <h1 style="color: #0f172a; text-shadow: none;">Find Your Home</h1>
+        <p style="max-width: 600px; margin: 1rem auto; color: #475569;">
+            Modern tools for a modern rental experience.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <button class="btn-turquoise">Get Started Free</button>
+            <button class="btn-pearl" style="border-color: #cbd5e1; color: #475569; text-shadow: none;">Browse
+                Properties</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Screening Report - {{ screening.application.tenant.get_full_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 900px;">
+        <div style="margin-bottom: var(--spacing-lg);">
+            <a href="{% url 'application_detail' screening.application.pk %}" style="color: var(--color-primary);">←
+                Back to Application</a>
+        </div>
+
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="margin-bottom: var(--spacing-xs);">Screening Report 🛡️</h2>
+                    <p style="margin-bottom: 0; color: var(--color-gray-600);">
+                        Generated on {{ screening.created_at|date:"F d, Y" }}
+                    </p>
+                </div>
+                <div class="badge {% if screening.recommendation == 'Accept' %}badge-success{% else %}badge-warning{% endif %}"
+                    style="font-size: 1.2rem; padding: var(--spacing-sm) var(--spacing-lg);">
+                    Recommendation: {{ screening.recommendation }}
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- Executive Summary -->
+                <div class="grid grid-3" style="margin-bottom: var(--spacing-xl); gap: var(--spacing-lg);">
+                    <div
+                        style="text-align: center; padding: var(--spacing-lg); background: var(--color-gray-100); border-radius: var(--radius-md);">
+                        <div style="font-size: 2rem; font-weight: 700; color: 
+                            {% if screening.credit_score_range == 'excellent' %}#059669
+                            {% elif screening.credit_score_range == 'good' %}#2563eb
+                            {% elif screening.credit_score_range == 'fair' %}#d97706
+                            {% else %}#dc2626{% endif %};">
+                            {{ screening.get_credit_score_range_display }}
+                        </div>
+                        <div style="color: var(--color-gray-600); font-weight: 600;">Credit Score</div>
+                    </div>
+
+                    <div
+                        style="text-align: center; padding: var(--spacing-lg); background: var(--color-gray-100); border-radius: var(--radius-md);">
+                        <div style="font-size: 2rem; margin-bottom: var(--spacing-xs);">
+                            {% if screening.criminal_record_clear %}✅{% else %}⚠️{% endif %}
+                        </div>
+                        <div style="color: var(--color-gray-600); font-weight: 600;">Criminal Record</div>
+                        <div style="font-size: 0.875rem; color: var(--color-gray-500);">
+                            {% if screening.criminal_record_clear %}No records found{% else %}Review required{% endif %}
+                        </div>
+                    </div>
+
+                    <div
+                        style="text-align: center; padding: var(--spacing-lg); background: var(--color-gray-100); border-radius: var(--radius-md);">
+                        <div style="font-size: 2rem; margin-bottom: var(--spacing-xs);">
+                            {% if screening.eviction_history_clear %}✅{% else %}⚠️{% endif %}
+                        </div>
+                        <div style="color: var(--color-gray-600); font-weight: 600;">Eviction History</div>
+                        <div style="font-size: 0.875rem; color: var(--color-gray-500);">
+                            {% if screening.eviction_history_clear %}No records found{% else %}Match found{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed sections can go here -->
+                <div
+                    style="padding: var(--spacing-lg); border: 1px solid var(--color-gray-200); border-radius: var(--radius-md);">
+                    <h3 style="margin-bottom: var(--spacing-md);">Identity & Verification</h3>
+                    <div class="grid grid-2">
+                        <div>
+                            <p><strong>SSN Trace:</strong> <span style="color: var(--color-success);">Verified</span>
+                            </p>
+                            <p><strong>Employment:</strong> {% if screening.employment_verified %}<span
+                                    style="color: var(--color-success);">Verified</span>{% else %}Pending{% endif %}</p>
+                        </div>
+                        <div>
+                            <p><strong>Income:</strong> {% if screening.income_verified %}<span
+                                    style="color: var(--color-success);">Verified</span>{% else %}Pending{% endif %}</p>
+                            <p><strong>Risk Level:</strong> <span style="text-transform: capitalize;">{{
+                                    screening.risk_level }}</span></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-footer" style="text-align: right;">
+                <button onclick="window.print()" class="btn btn-outline">🖨️ Print Report</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

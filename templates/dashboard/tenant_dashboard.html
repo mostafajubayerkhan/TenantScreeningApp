@@ -10,6 +10,29 @@
             Welcome, {{ user.first_name|default:user.username }}! 🏠
         </h1>
 
+        <!-- Trust Meter Section -->
+        <div class="trust-meter-container">
+            <h4 style="margin-bottom: 0.5rem; color: var(--color-gray-600);">Your Tenant Trust Score™</h4>
+            <div class="trust-score-display">{{ trust_score }}</div>
+
+            <div style="margin-bottom: 1rem;">
+                {% if trust_badge == 'gold' %}
+                <span class="trust-badge badge-gold">🏆 Top Applicant</span>
+                {% elif trust_badge == 'silver' %}
+                <span class="trust-badge badge-silver">🥈 Verified Applicant</span>
+                {% elif trust_badge == 'bronze' %}
+                <span class="trust-badge badge-bronze">🥉 Rising Applicant</span>
+                {% else %}
+                <span class="trust-badge badge-unranked">Unranked</span>
+                {% endif %}
+            </div>
+
+            <p style="font-size: 0.875rem; color: var(--color-gray-500); max-width: 400px; margin: 0 auto;">
+                Boost your score by verifying your identity, adding employment history, and completing background
+                checks.
+            </p>
+        </div>
+
         <!-- Quick Actions -->
         <div style="margin-bottom: var(--spacing-2xl);">
             <a href="{% url 'property_list' %}" class="btn btn-accent btn-large">

@@ -19,6 +19,20 @@
                 style="border-color: white; color: white;">Browse Properties</a>
             {% endif %}
         </div>
+
+        <!-- Glassmorphic Search Bar -->
+        <div class="glass-panel"
+            style="max-width: 800px; margin: var(--spacing-2xl) auto 0; padding: var(--spacing-xl); border-radius: var(--radius-lg);">
+            <form action="{% url 'property_list' %}" method="GET" class="grid grid-4" style="gap: var(--spacing-md);">
+                <input type="text" name="search" class="form-input" placeholder="Search properties..."
+                    style="border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.9);">
+                <input type="text" name="city" class="form-input" placeholder="City"
+                    style="border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.9);">
+                <input type="number" name="min_price" class="form-input" placeholder="Max Rent"
+                    style="border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.9);">
+                <button type="submit" class="btn btn-primary" style="width: 100%; box-shadow: none;">Search</button>
+            </form>
+        </div>
     </div>
 </section>
 

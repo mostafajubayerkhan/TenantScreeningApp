@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Lease - TenantScreening{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 800px;">
+        <h2 style="margin-bottom: var(--spacing-lg);">AI Lease Generator 🤖</h2>
+        <p style="margin-bottom: var(--spacing-xl); color: var(--color-gray-600);">
+            Generate a rock-solid, state-compliant residential lease agreement in seconds.
+        </p>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="{% url 'lease_generate' %}">
+                    {% csrf_token %}
+
+                    <h4
+                        style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--color-gray-200); padding-bottom: var(--spacing-sm);">
+                        1. Property & Parties
+                    </h4>
+
+                    <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                        <div class="form-group">
+                            <label class="form-label">Property Address</label>
+                            <input type="text" name="address" class="form-input" placeholder="123 Main St, Apt 4B"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City, State, Zip</label>
+                            <input type="text" name="city_state_zip" class="form-input" placeholder="New York, NY 10001"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                        <div class="form-group">
+                            <label class="form-label">Landlord Name (Lessor)</label>
+                            <input type="text" name="landlord_name" class="form-input"
+                                value="{{ user.get_full_name|default:user.username }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tenant Name (Lessee)</label>
+                            <input type="text" name="tenant_name" class="form-input" placeholder="Jane Doe" required>
+                        </div>
+                    </div>
+
+                    <h4
+                        style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--color-gray-200); padding-bottom: var(--spacing-sm);">
+                        2. Terms & Rent
+                    </h4>
+
+                    <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                        <div class="form-group">
+                            <label class="form-label">Lease Start Date</label>
+                            <input type="date" name="start_date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Lease End Date</label>
+                            <input type="date" name="end_date" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                        <div class="form-group">
+                            <label class="form-label">Monthly Rent ($)</label>
+                            <input type="number" name="rent_amount" class="form-input" placeholder="2500" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Security Deposit ($)</label>
+                            <input type="number" name="deposit_amount" class="form-input" placeholder="2500" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                        <div class="form-group">
+                            <label class="form-label">Late Fee ($)</label>
+                            <input type="number" name="late_fee" class="form-input" placeholder="50" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pets Allowed?</label>
+                            <select name="pets_allowed" class="form-select">
+                                <option value="no">No Pets</option>
+                                <option value="yes">Pets Allowed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4
+                        style="margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--color-gray-200); padding-bottom: var(--spacing-sm);">
+                        3. Rules & Conditions
+                    </h4>
+
+                    <div class="form-group" style="margin-bottom: var(--spacing-lg);">
+                        <label class="form-label" style="display: block; margin-bottom: var(--spacing-sm);">Utilities
+                            Included?</label>
+                        <div class="grid grid-3">
+                            <label><input type="checkbox" name="utilities" value="Water"> Water</label>
+                            <label><input type="checkbox" name="utilities" value="Electricity"> Electricity</label>
+                            <label><input type="checkbox" name="utilities" value="Gas"> Gas</label>
+                            <label><input type="checkbox" name="utilities" value="Internet"> Internet</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--spacing-xl);">
+                        <label class="form-label">Special Conditions (Optional)</label>
+                        <textarea name="special_conditions" class="form-input" rows="3"
+                            placeholder="e.g. No pets allowed. Quiet hours after 10 PM."></textarea>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <button type="submit" class="btn btn-primary btn-large">
+                            Generate Lease Agreement 📄
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

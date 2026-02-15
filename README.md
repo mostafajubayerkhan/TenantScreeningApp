@@ -97,15 +97,28 @@ Access Django admin at: http://127.0.0.1:8000/admin/
 - Access screening reports
 - Manage leases
 
+### Premium Landlord Features
+
+- **Landlord Analytics Dashboard**: Interactive charts tracking property views and applicant quality (Trust Scores) using `Chart.js`.
+- **Verified Screening APIs (Mocked)**: Process comprehensive credit and background checks for $30, generating a premium report.
+- **AI-Powered Lease Generator**: Create professional, 13-clause residential lease agreements instantly.
+- **Tenant Trust Scores**: A badge-based system (Gold, Silver, Bronze) to help landlords identify top-tier applicants at a glance.
+
+### Modern Design & Aesthetics
+
+- **Glassmorphism UI**: Frosted-glass effects on headers, search bars, and navigation.
+- **Dynamic Animations**: Smooth hover transforms, fade-in-up hero sections, and glow effects on primary calls-to-action.
+- **Responsive Charts**: Data-driven insights visualized through interactive line and doughnut charts.
+
 ### File Structure
 
 ```
 📁 TenantScreeningApp/
 ├── 📁 config/          # Django settings
-├── 📁 core/            # Main application code
-├── 📁 static/          # CSS, JS, images
-├── 📁 templates/       # HTML templates
-├── 📁 media/           # User uploads (created on first upload)
+├── 📁 core/            # Main application logic (Models, Views, Forms)
+├── 📁 static/          # CSS Design System & Chart.js integration
+├── 📁 templates/       # Premium HTML templates with Glassmorphism
+├── 📁 media/           # User uploads (Properties, Profiles)
 ├── 📁 venv/            # Virtual environment
 ├── 📄 manage.py        # Django management script
 └── 📄 requirements.txt # Python dependencies
@@ -113,10 +126,15 @@ Access Django admin at: http://127.0.0.1:8000/admin/
 
 ### Common Commands
 
-**Database Migrations** (if you modify models):
+**Database Migrations**:
 ```bash
 ./venv/bin/python manage.py makemigrations
 ./venv/bin/python manage.py migrate
+```
+
+**Run Development Server**:
+```bash
+./venv/bin/python manage.py runserver
 ```
 
 **Create Superuser**:
@@ -124,36 +142,15 @@ Access Django admin at: http://127.0.0.1:8000/admin/
 ./venv/bin/python manage.py createsuperuser
 ```
 
-**Collect Static Files** (for production):
-```bash
-./venv/bin/python manage.py collectstatic
-```
-
-### Troubleshooting
-
-**Server won't start?**
-- Make sure virtual environment is activated
-- Check if port 8000 is already in use
-- Verify all dependencies are installed: `pip install -r requirements.txt`
-
-**Static files not loading?**
-- Ensure `DEBUG = True` in `config/settings.py`
-- Check that `./venv/bin/python manage.py runserver` is running
-
-**Can't log in?**
-- Verify username and password
-- Create a new account if needed
-- Check that migrations have been applied
-
 ### Next Steps
 
-1. **Create test data**: Add properties and submit applications to explore features
-2. **Customize**: Edit templates and CSS to match your branding
-3. **Extend**: Add new features like payments or notifications
-4. **Deploy**: Set up for production with PostgreSQL and proper hosting
+1. **Deploy to Production**: Ready for Heroku/AWS with minor config tweaks.
+2. **Stripe Integration**: Connect real payments for screening fees.
+3. **Live API Connection**: Swap mock services for actual Checkr or TransUnion APIs.
 
 ### Support
 
-For detailed documentation, see:
-- [Walkthrough](file:///Users/mostafakhan/.gemini/antigravity/brain/7bb3bc89-3cd8-4213-8faa-f5ced5d38a2e/walkthrough.md)
-- [Implementation Plan](file:///Users/mostafakhan/.gemini/antigravity/brain/7bb3bc89-3cd8-4213-8faa-f5ced5d38a2e/implementation_plan.md)
+For detailed developers guide and proof of work, see:
+- [Walkthrough](/Users/mostafakhan/.gemini/antigravity/brain/7bb3bc89-3cd8-4213-8faa-f5ced5d38a2e/walkthrough.md)
+- [Implementation Plan](/Users/mostafakhan/.gemini/antigravity/brain/7bb3bc89-3cd8-4213-8faa-f5ced5d38a2e/implementation_plan.md)
+- [Task Progress](/Users/mostafakhan/.gemini/antigravity/brain/7bb3bc89-3cd8-4213-8faa-f5ced5d38a2e/task.md)

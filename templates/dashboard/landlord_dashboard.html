@@ -4,6 +4,8 @@
 {% block title %}Landlord Dashboard - TenantScreening{% endblock %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <section class="section">
     <div class="container">
         <h1 style="margin-bottom: var(--spacing-xl);">
@@ -26,13 +28,85 @@
                 <div class="stat-number">{{ applications.count }}</div>
                 <div class="stat-label">Total Applications</div>
             </div>
+
+            <div class="stat-card" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+                <div class="stat-number">{{ total_views }}</div>
+                <div class="stat-label">Total Property Views</div>
+            </div>
         </div>
+
+        <!-- Analytics Charts -->
+        <div class="grid grid-2" style="margin-bottom: var(--spacing-2xl); gap: var(--spacing-xl);">
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin-bottom: 0;">Traffic Overview 📈</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="viewsChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin-bottom: 0;">Applicant Quality 🏆</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="trustScoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Traffic Chart
+            const ctxViews = document.getElementById('viewsChart').getContext('2d');
+            new Chart(ctxViews, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Property Views',
+                        data: [12, 19, 3, 5, 2, 3, {{ total_views|default:10 }}], // Mock data + real total
+                        borderColor: '#2563eb',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)'
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // Trust Score Chart
+            const ctxTrust = document.getElementById('trustScoreChart').getContext('2d');
+            new Chart(ctxTrust, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gold (90+)', 'Silver (70-89)', 'Bronze (50-69)', 'Unranked'],
+                    datasets: [{
+                        data: [
+                            {{ applications_gold|default:2 }}, 
+                            {{ applications_silver|default:3 }}, 
+                            {{ applications_bronze|default:1 }}, 
+                            {{ applications_unranked|default:1 }}
+                        ],
+                        backgroundColor: ['#FFD700', '#cbd5e1', '#cd7f32', '#e2e8f0']
+                    }]
+                },
+                options: { responsive: true }
+            });
+        </script>
 
         <!-- Quick Actions -->
         <div style="margin-bottom: var(--spacing-2xl);">
-            <a href="{% url 'property_create' %}" class="btn btn-accent btn-large">
-                ➕ Add New Property
-            </a>
+            <div class="grid grid-3" style="margin-bottom: var(--spacing-md);">
+                <a href="{% url 'property_create' %}" class="btn btn-primary btn-large" style="text-align: center;">
+                    ➕ Add New Property
+                </a>
+                <a href="{% url 'lease_generate' %}" class="btn btn-accent btn-large" style="text-align: center;">
+                    📄 Create AI Lease
+                </a>
+                <a href="{% url 'rent_estimator' %}" class="btn btn-outline btn-large" style="text-align: center;">
+                    📊 Rent Estimator
+                </a>
+            </div>
             <a href="{% url 'property_list' %}" class="btn btn-outline">
                 View All Properties
             </a>

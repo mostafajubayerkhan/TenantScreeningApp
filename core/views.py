@@ -35,6 +35,79 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
+def button_preview(request):
+    """Preview page for button styles"""
+    return render(request, 'button_preview.html')
+
+
+def rent_estimator(request):
+    """Market Rent Estimator View"""
+    result = None
+    if request.method == "POST":
+        # Get data
+        zip_code = request.POST.get('zip_code')
+        beds = int(request.POST.get('bedrooms', 1))
+        baths = float(request.POST.get('bathrooms', 1))
+        has_parking = request.POST.get('has_parking') == 'true'
+        has_pool = request.POST.get('has_pool') == 'true'
+        has_gym = request.POST.get('has_gym') == 'true'
+
+        # MVP Algorithm
+        base_rent = 1000  # Base for studio
+        
+        # Adjust for Beds/Baths
+        base_rent += (beds * 400)
+        base_rent += (baths * 200)
+
+        # Adjust for Amenities
+        if has_parking: base_rent += 150
+        if has_pool: base_rent += 100
+        if has_gym: base_rent += 100
+
+        # Location Multiplier (Simulated)
+        if zip_code and zip_code.startswith('9'): # West Coast Premium
+            base_rent *= 1.2
+        elif zip_code and zip_code.startswith('1'): # East Coast Premium
+            base_rent *= 1.15
+
+        optimal = int(base_rent)
+        result = {
+            'optimal_price': f"{optimal:,}",
+            'low_range': f"{int(optimal * 0.9):,}",
+            'high_range': f"{int(optimal * 1.1):,}",
+        }
+
+    return render(request, 'rent_estimator.html', {'result': result})
+
+
+@login_required
+def lease_generate(request):
+    """Generate Lease Agreement View"""
+    if request.user.role != 'landlord':
+        messages.error(request, "Only Landlords can generate leases.")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        # Collect data from form
+        data = {
+            'address': request.POST.get('address'),
+            'city_state_zip': request.POST.get('city_state_zip'),
+            'landlord_name': request.POST.get('landlord_name'),
+            'tenant_name': request.POST.get('tenant_name'),
+            'start_date': request.POST.get('start_date'),
+            'end_date': request.POST.get('end_date'),
+            'rent_amount': request.POST.get('rent_amount'),
+            'deposit_amount': request.POST.get('deposit_amount'),
+            'late_fee': request.POST.get('late_fee'),
+            'pets_allowed': request.POST.get('pets_allowed'),
+            'utilities': request.POST.getlist('utilities'),
+            'special_conditions': request.POST.get('special_conditions'),
+        }
+        return render(request, 'leases/lease_preview.html', {'data': data})
+
+    return render(request, 'leases/lease_form.html')
+
+
 def login_view(request):
     """User login view"""
     if request.user.is_authenticated:
@@ -74,12 +147,27 @@ def dashboard(request):
         applications = RentalApplication.objects.filter(property__landlord=user).select_related('property', 'tenant')
         recent_messages = Message.objects.filter(recipient=user)[:5]
         
+        # Analytics
+        total_views = sum(p.views for p in properties)
+        
+        # Trust Score Distribution
+        apps = applications.select_related('tenant')
+        gold = sum(1 for a in apps if a.tenant.trust_badge == 'gold')
+        silver = sum(1 for a in apps if a.tenant.trust_badge == 'silver')
+        bronze = sum(1 for a in apps if a.tenant.trust_badge == 'bronze')
+        unranked = sum(1 for a in apps if a.tenant.trust_badge == 'unranked')
+
         context = {
             'properties': properties,
             'applications': applications,
             'recent_messages': recent_messages,
             'total_properties': properties.count(),
             'pending_applications': applications.filter(status='pending').count(),
+            'total_views': total_views,
+            'applications_gold': gold,
+            'applications_silver': silver,
+            'applications_bronze': bronze,
+            'applications_unranked': unranked,
         }
         return render(request, 'dashboard/landlord_dashboard.html', context)
     else:
@@ -92,6 +180,8 @@ def dashboard(request):
             'applications': applications,
             'leases': leases,
             'recent_messages': recent_messages,
+            'trust_score': user.calculate_trust_score(),
+            'trust_badge': user.trust_badge,
         }
         return render(request, 'dashboard/tenant_dashboard.html', context)
 
@@ -138,6 +228,10 @@ def property_list(request):
 def property_detail(request, pk):
     """Property detail page"""
     property_obj = get_object_or_404(Property, pk=pk)
+    
+    # Increment views
+    property_obj.views += 1
+    property_obj.save()
     
     # Check if user already applied
     has_applied = False
@@ -252,3 +346,57 @@ def application_review(request, pk):
             return redirect('application_detail', pk=pk)
     
     return redirect('application_detail', pk=pk)
+
+
+@login_required
+def run_screening(request, pk):
+    """Mock Screening Process (Payment + API Call)"""
+    application = get_object_or_404(RentalApplication, pk=pk)
+    
+    if request.user != application.property.landlord:
+        messages.error(request, 'Unauthorized.')
+        return redirect('dashboard')
+        
+    if request.method == 'POST':
+        # 1. Simulate Payment ($30)
+        # In real app: stripe.Charge.create(...)
+        pass 
+
+        # 2. Simulate API Call (TransUnion/Checkr)
+        import random
+        # Deterministic mock 
+        score_val = random.randint(700, 820)
+        if score_val >= 750: score_range = 'excellent'
+        elif score_val >= 700: score_range = 'good'
+        elif score_val >= 650: score_range = 'fair'
+        else: score_range = 'poor'
+
+        # Create Report
+        ScreeningReport.objects.create(
+            application=application,
+            credit_score_range=score_range,
+            criminal_record_clear=True, 
+            eviction_history_clear=True,
+            employment_verified=True,
+            income_verified=True,
+            recommendation="Accept" if score_val > 650 else "Conditional",
+            risk_level='low' if score_val > 700 else 'medium'
+        )
+        
+        messages.success(request, 'Screening Report Generated Successfully! ($30 charged)')
+        return redirect('application_detail', pk=pk)
+    
+    return redirect('dashboard')
+
+
+@login_required
+def view_screening_report(request, pk):
+    """View detailed screening report"""
+    screening = get_object_or_404(ScreeningReport, pk=pk)
+    
+    # Permissions
+    if request.user != screening.application.property.landlord:
+        messages.error(request, 'Unauthorized.')
+        return redirect('dashboard')
+        
+    return render(request, 'applications/screening_report.html', {'screening': screening})

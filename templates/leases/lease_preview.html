@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Residential Lease Agreement</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            color: #000;
+        }
+
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-top: 25px;
+            text-transform: uppercase;
+            text-decoration: underline;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .details {
+            font-weight: bold;
+        }
+
+        .signature-block {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sign-box {
+            width: 45%;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 20px;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="btn-print no-print">🖨️ Print / Save as PDF</button>
+
+    <h1>Residential Lease Agreement</h1>
+
+    <p>This Lease Agreement (the "Agreement") is made and entered into on <strong>{% now "F j, Y" %}</strong>, by and
+        between:</p>
+
+    <p>
+        <strong>Landlord:</strong> <span class="details">{{ data.landlord_name }}</span><br>
+        <strong>Tenant:</strong> <span class="details">{{ data.tenant_name }}</span>
+    </p>
+
+    <h2>1. Property</h2>
+    <p>The Landlord agrees to lease to the Tenant, and the Tenant agrees to lease from the Landlord, the property
+        located at:</p>
+    <p class="details">{{ data.address }}<br>{{ data.city_state_zip }}</p>
+
+    <h2>2. Term</h2>
+    <p>The lease term shall begin on <strong>{{ data.start_date }}</strong> and end on <strong>{{ data.end_date
+            }}</strong>.</p>
+
+    <h2>3. Rent</h2>
+    <p>The Tenant agrees to pay the Landlord the sum of <strong>${{ data.rent_amount }}</strong> per month, due on the
+        1st day of each month.</p>
+
+    <h2>4. Security Deposit</h2>
+    <p>Upon execution of this Agreement, the Tenant shall deposit with the Landlord the sum of <strong>${{
+            data.deposit_amount }}</strong> as security for any damage caused to the Premises during the term hereof.
+    </p>
+
+    <h2>5. Utilities</h2>
+    <p>The Landlord shall be responsible for the following utilities:</p>
+    <p class="details">
+        {% if data.utilities %}
+        {{ data.utilities|join:", " }}
+        {% else %}
+        Tenant is responsible for all utilities.
+        {% endif %}
+    </p>
+
+    <h2>6. Late Fees</h2>
+    <p>If rent is not paid by the 5th day of the month, the Tenant agrees to pay a late fee of <strong>${{ data.late_fee
+            }}</strong>.</p>
+
+    <h2>7. Pets</h2>
+    <p>
+        {% if data.pets_allowed == 'yes' %}
+        Pets are allowed on the Premises with prior written consent of the Landlord.
+        {% else %}
+        No pets shall be allowed on the Premises without the prior written consent of the Landlord.
+        {% endif %}
+    </p>
+
+    <h2>8. Occupancy</h2>
+    <p>The Premises shall be used and occupied by the Tenant(s) and their immediate family exclusively, as a private
+        single-family dwelling, and no part of the Premises shall be used at any time during the term of this Agreement
+        by the Tenant for the purpose of carrying on any business, profession, or trade.</p>
+
+    <h2>9. Right of Entry</h2>
+    <p>The Landlord and the Landlord's agents shall have the right at all reasonable times during the term of this
+        Agreement and any renewal thereof to enter the Premises for the purpose of inspecting the Premises and all
+        buildings and improvements thereon. Landlord generally agrees to provide 24 hours notice.</p>
+
+    <h2>10. Maintenance and Repairs</h2>
+    <p>Tenant will, at its sole expense, keep and maintain the Premises and appurtenances in good and sanitary condition
+        and repair during the term of this Agreement and any renewal thereof. Tenant shall immediately notify Landlord
+        of any damage or finding of a defect.</p>
+
+    <h2>11. Special Conditions</h2>
+    <p>
+        {% if data.special_conditions %}
+        {{ data.special_conditions|linebreaksbr }}
+        {% else %}
+        None.
+        {% endif %}
+    </p>
+
+    <h2>12. Governing Law</h2>
+    <p>This Agreement shall be governed, construed, and enforced in accordance with the laws of the State where the
+        Property is located.</p>
+
+    <h2>13. Entire Agreement</h2>
+    <p>This Agreement constitutes the entire agreement between the parties and supersedes any prior understanding or
+        representation of any kind preceding the date of this Agreement.</p>
+
+    <div class="signature-block">
+        <div class="sign-box">
+            <p>Landlord Signature</p>
+            <p>Date: ____________________</p>
+        </div>
+        <div class="sign-box">
+            <p>Tenant Signature</p>
+            <p>Date: ____________________</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

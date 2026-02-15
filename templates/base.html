@@ -15,7 +15,7 @@
         rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=6">
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -32,6 +32,7 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'property_list' %}">Properties</a></li>
+                <li><a href="{% url 'rent_estimator' %}">Rent Estimator 📊</a></li>
                 {% if user.role == 'landlord' %}
                 <li><a href="{% url 'property_create' %}">Add Property</a></li>
                 {% endif %}
